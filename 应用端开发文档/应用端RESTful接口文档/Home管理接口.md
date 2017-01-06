@@ -43,6 +43,8 @@
 
 **1.19 [删除home成员的邀请记录](#delete_inviter_list)**
 
+**1.20 [取消home成员邀请](#home_invite_cancel)**
+
 ## 2.[Home Inbox管理](#inbox_manager)
 
 **2.1 [Home成员发送消息到Inbox](#home_inbox_add)**
@@ -292,7 +294,8 @@ Content
 				"expire_time":"被邀请者的到期时间"
 	            "status": "邀请状态，等待接受，已接受，已拒绝，已失效，具体枚举值见附录",
 	            "end_time": "邀请记录有效截止时间",
-	            "create_time": "创建时间"
+	            "create_time": "创建时间",
+				"invitee_account":"被邀请者的账号"
 	        }
 	    ]
 	}
@@ -311,6 +314,7 @@ create_time | 是 | 创建时间，例：2014-10-09T08:15:40.843Z
 role | 是 | home成员的角色类型,见[home成员类型](#home_member_role_type)
 authority | 否 | 对设备的控制权限，**R可读，W可写，RW可读可写；默认为RW**；
 expire_time | 否 | home成员的到期时间，例：2014-10-09T08:15:40.843Z
+invitee_account | 否 | 被邀请者的账号
 
 
 ### <a name="get_inviter_list">1.6 用户获取发出的邀请记录列表</a>
@@ -349,7 +353,8 @@ Content
 	            "inviter": "邀请者用户ID",
 	            "status": "邀请状态，等待接受，已接受，已拒绝，已失效，具体枚举值见附录",
 	            "end_time": "邀请记录有效截止时间",
-	            "create_time": "创建时间"
+	            "create_time": "创建时间",
+				"invitee_account":"被邀请者的账号"
 	        }
 	    ]
 	}
@@ -365,6 +370,7 @@ inviter | 是 | 邀请者用户ID
 status | 是 | 邀请状态，等待接受，已接受，已拒绝，已失效，具体枚举值见[附录](#invite_status)
 end_time | 是 | 邀请记录有效截止时间， 例：2014-10-09T08:15:40.843Z
 create_time | 是 | 创建时间，例：2014-10-09T08:15:40.843Z
+invitee_account | 否 | 被邀请者的账号
 
 
 ### <a name ="home_member_invite_accept">1.7 用户接受邀请</a>
@@ -375,7 +381,7 @@ create_time | 是 | 创建时间，例：2014-10-09T08:15:40.843Z
 
 URL
 
-	POST /v2/homes/{home_id}/user_accept
+	POST /v2/home/{home_id}/user_accept
 
 Header
 
@@ -543,7 +549,9 @@ Content
 	                {
 	                    "user_id": "用户Id",
 	                    "role": "角色类型",
-	                    "expire_time": "到期的时间"
+	                    "expire_time": "到期的时间",
+						"email":"用户邮箱",
+						"phone":"用户手机"
 	                }
 	            ],
 	            "creator": "创建者Id",
@@ -567,6 +575,8 @@ creator | 是 | home的创建者Id
 update_time |是 | 最近一次的修改时间，例：2014-10-09T08:15:40.843Z
 create_time |是 | 创建时间，例：2014-10-09T08:15:40.843Z
 version |是 | 数据的版本号
+phone | 是 | 用户手机
+email | 是 | 用户邮箱
 
 ### <a name ="set_device_home_id">1.12 设置设备归属于Home</a>
 
@@ -887,6 +897,34 @@ Header
 
 Content
 
+### <a name="home_invite_cancel">1.20 取消home成员邀请</a>
+
+	邀请者可以取消邀请动作
+
+**Request**
+
+URL
+
+	POST /v2/home/{home_id}/invite_cancel
+
+Header
+
+	Content-Type:"application/json"
+	Access-Token:"调用凭证"
+
+Content
+
+	{
+		"invite_id" : "邀请ID"
+	}
+
+**Response**
+
+Header
+
+	HTTP/1.1 200 OK
+
+Content
 
 
 ## <a name="inbox_manager">2. Inbox管理</a>
@@ -1106,6 +1144,7 @@ Content
 已接受 | 1 
 已拒绝 | 2 
 已失效 | 3
+已取消 | 4
 
 
 ### <a name="inbox_message_type">消息类型</a>
